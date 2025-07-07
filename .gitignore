@@ -1,14 +1,42 @@
-.venv/
-
+# Python artifacts
 *.pyc
+*.pyo
+*.pyd
 __pycache__/
+*.so
 
+# Virtual environment
+.venv/
+venv/
+
+# Flask instance folder (contains config like secret keys)
 instance/
 
+# Test cache
 .pytest_cache/
 .coverage
 htmlcov/
 
+# Packaging and build
 dist/
 build/
 *.egg-info/
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Node.js frontend stuff (React)
+node_modules/
+*.log
+npm-debug.log*
+
+# Frontend build output
+frontend/build/
+frontend/node_modules/
