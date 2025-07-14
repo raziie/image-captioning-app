@@ -1,6 +1,6 @@
 import uuid
 from gtts import gTTS
-from .config import *
+from config.app_config import *
 
 
 def save_uploaded_image(file):
