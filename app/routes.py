@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from .utils import *
+from .model import *
 
 # Create a blueprint object
 api = Blueprint('api', __name__)
@@ -14,9 +15,13 @@ def index():
 def predict_caption():
     file = request.files['image']
     path = save_uploaded_image(file)
-    # caption = generate_caption(path)
-    return jsonify({'message': 'Image uploaded successfully', 'path': path})
-    # return jsonify({'caption': caption})
+    caption = generate_caption(path, visualize=True)
+    audio_path = caption_to_audio(caption)
+    # return jsonify({'message': 'Image uploaded successfully', 'path': path})
+    return jsonify({
+        'caption': caption,
+        'audio': audio_path
+    })
 
 
 @api.route('/ping', methods=['GET'])

@@ -1,8 +1,6 @@
 import uuid
-import os
-
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static', 'uploads')
+from gtts import gTTS
+from .config import *
 
 
 def save_uploaded_image(file):
@@ -12,3 +10,10 @@ def save_uploaded_image(file):
     filepath = os.path.join(UPLOAD_FOLDER, filename)
     file.save(filepath)
     return filepath
+
+
+def caption_to_audio(caption, audio_filename="caption.mp3"):
+    tts = gTTS(caption, lang='en')
+    full_path = os.path.join(AUDIO_FOLDER, audio_filename)
+    tts.save(full_path)
+    return full_path
