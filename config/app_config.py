@@ -6,6 +6,7 @@ BASE_CONFIG_DIR = os.path.dirname(os.path.dirname(__file__))
 BASE_APP_DIR = os.path.abspath(os.path.join(BASE_CONFIG_DIR, "./app"))
 UPLOAD_FOLDER = os.path.join(BASE_APP_DIR, 'static', 'uploads')
 AUDIO_FOLDER = os.path.join(UPLOAD_FOLDER, 'audio')
+IMAGE_FOLDER = os.path.join(UPLOAD_FOLDER, 'image')
 
 BASE_PROJECT_DIR = os.path.abspath(os.path.join(BASE_CONFIG_DIR, "."))
 BEST_CHECKPOINT_PATH = os.path.join(BASE_PROJECT_DIR, 'checkpoints', 'checkpoint_best.pth')

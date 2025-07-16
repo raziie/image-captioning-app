@@ -14,9 +14,9 @@ def index():
 @api.route('/predict', methods=['POST'])
 def predict_caption():
     file = request.files['image']
-    path = save_uploaded_image(file)
-    caption = generate_caption(path, visualize=True)
-    audio_path = caption_to_audio(caption)
+    path, base_filename = save_uploaded_image(file)
+    caption = generate_caption(path, visualize=False)
+    audio_path = save_caption_audio(caption, base_filename)
     # return jsonify({'message': 'Image uploaded successfully', 'path': path})
     return jsonify({
         'caption': caption,
