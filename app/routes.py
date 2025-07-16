@@ -20,7 +20,7 @@ def predict_caption():
     # return jsonify({'message': 'Image uploaded successfully', 'path': path})
     return jsonify({
         'caption': caption,
-        'audio': audio_path
+        'audio': audio_path.replace("\\", "/")
     })
 
 

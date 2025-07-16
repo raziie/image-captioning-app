@@ -1,0 +1,9 @@
+torch~=2.6.0
+torchvision~=0.21.0
+pillow~=10.3.0
+gTTS~=2.5.4
+Flask~=3.0.3
+spacy~=3.8.7
+numpy~=1.26.4
+matplotlib~=3.8.4
+scikit-image~=0.25.2

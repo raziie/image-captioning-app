@@ -8,3 +8,7 @@
 .error-text {
     color: red;
 }
+
+.image {
+    max-width: 50%;
+}

@@ -4,8 +4,9 @@ import './App.css'
 
 function App() {
     const [image, setImage] = useState(null);
-    const [response, setResponse] = useState("");
+    const [response, setResponse] = useState({});
     const [error, setError] = useState("");
+    const [isGenerated, setIsGenerated] = useState(false);
 
     useEffect(() => {
       fetch("http://127.0.0.1:5000/ping")
@@ -26,10 +27,13 @@ function App() {
 
         try {
           const res = await axios.post("http://127.0.0.1:5000/predict", formData);
-          setResponse(JSON.stringify(res.data, null, 2));
+          setResponse(res.data);
+          setIsGenerated(true);
         } catch (err) {
           console.error(err);
-          setResponse("Upload failed.");
+          setError("Caption generation failed.");
+          setResponse({});
+          setIsGenerated(false);
         }
     };
 
@@ -46,10 +50,15 @@ function App() {
               setError("");
           }}
         />
-        <button type="submit">Upload</button>
+        <button type="submit">Generate</button>
       </form>
-      {error && <p className={error-text}>{error}</p>}
-      <p>{response}</p>
+      {error && <p className="error-text">{error}</p>}
+      {image && <img className="image" src={URL.createObjectURL(image)} alt="uploaded image" />}
+      {isGenerated && <p>{response.caption}</p>}
+      {isGenerated && <audio key={response.audio} controls autoPlay>
+        <source src={`http://localhost:5000/${response.audio}`} type="audio/mpeg" />
+        Your browser does not support the audio element.
+      </audio>}
     </div>
     </>
     )

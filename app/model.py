@@ -53,7 +53,8 @@ def generate_caption(image_path, visualize=False):
     captioner, vocab = load_captioner_and_vocab()
     transform = get_transform()
 
-    img = Image.open(image_path).convert("RGB")
+    full_image_path = os.path.join(BASE_APP_DIR, image_path)
+    img = Image.open(full_image_path).convert("RGB")
     img = transform(img).to(DEVICE)  # (3, 256, 256)
 
     seq, alphas = captioner.generate_beam_search(img, beam_size=BEAM_SIZE)
