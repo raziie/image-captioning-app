@@ -1,7 +1,7 @@
 import os
 
-BASE_CONFIG_DIR = os.path.dirname(os.path.dirname(__file__))
 # Paths
+BASE_CONFIG_DIR = os.path.dirname(os.path.dirname(__file__))
 BASE_DATA_DIR = os.path.abspath(os.path.join(BASE_CONFIG_DIR, "./data"))
 KARPATHY_JSON_PATH = os.path.abspath(os.path.join(BASE_DATA_DIR, "input/karpathy-splits/dataset_flickr8k.json"))
 IMAGE_FOLDER = os.path.abspath(os.path.join(BASE_DATA_DIR, "input/flickr8kimagescaptions/flickr8k/images/"))

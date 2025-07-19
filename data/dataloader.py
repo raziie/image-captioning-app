@@ -1,11 +1,8 @@
-# data/dataloader.py
-
 import json
 import pickle
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from data.dataset import ImageCaptionDataset
-from data.vocab import Vocabulary
 from data.collate import MyCollate
 from config.data_config import *
 from config.app_config import *
@@ -37,46 +34,68 @@ def get_dataloaders():
 
     # Training dataset builds the vocab
     train_dataset = ImageCaptionDataset(
-        IMAGE_FOLDER, split_data["train"], token_data["train"],
-        split="train", captions_per_image=CAPTIONS_PER_IMAGE, transform=transform,
+        IMAGE_FOLDER,
+        split_data["train"],
+        token_data["train"],
+        split="train",
+        captions_per_image=CAPTIONS_PER_IMAGE,
+        transform=transform,
         freq_threshold=FREQ_THRESHOLD
     )
 
     shared_vocab = train_dataset.vocab
-
     with open(VOCAB_PATH, 'wb') as f:
         pickle.dump(shared_vocab, f)
 
     val_dataset = ImageCaptionDataset(
-        IMAGE_FOLDER, split_data["val"], token_data["val"],
-        split="val", captions_per_image=CAPTIONS_PER_IMAGE, transform=transform,
-        freq_threshold=FREQ_THRESHOLD, vocab=shared_vocab
+        IMAGE_FOLDER,
+        split_data["val"],
+        token_data["val"],
+        split="val",
+        captions_per_image=CAPTIONS_PER_IMAGE,
+        transform=transform,
+        freq_threshold=FREQ_THRESHOLD,
+        vocab=shared_vocab
     )
 
     test_dataset = ImageCaptionDataset(
-        IMAGE_FOLDER, split_data["test"], token_data["test"],
-        split="test", captions_per_image=CAPTIONS_PER_IMAGE, transform=transform,
-        freq_threshold=FREQ_THRESHOLD, vocab=shared_vocab
+        IMAGE_FOLDER,
+        split_data["test"],
+        token_data["test"],
+        split="test",
+        captions_per_image=CAPTIONS_PER_IMAGE,
+        transform=transform,
+        freq_threshold=FREQ_THRESHOLD,
+        vocab=shared_vocab
     )
 
     pad_idx = shared_vocab.stoi["<pad>"]
 
     train_loader = DataLoader(
-        train_dataset, batch_size=BATCH_SIZE, shuffle=True,
-        collate_fn=MyCollate(pad_idx, split="train"), num_workers=WORKERS,
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        collate_fn=MyCollate(pad_idx, split="train"),
+        num_workers=WORKERS,
         pin_memory=PIN_MEMORY
     )
 
     val_loader = DataLoader(
-        val_dataset, batch_size=BATCH_SIZE, shuffle=False,
-        collate_fn=MyCollate(pad_idx, split="val"), num_workers=WORKERS,
+        val_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        collate_fn=MyCollate(pad_idx, split="val"),
+        num_workers=WORKERS,
         pin_memory=PIN_MEMORY
     )
 
     test_loader = DataLoader(
-        test_dataset, batch_size=1, shuffle=False,
-        collate_fn=MyCollate(pad_idx, split="test"), num_workers=WORKERS,
+        test_dataset,
+        batch_size=1,
+        shuffle=False,
+        collate_fn=MyCollate(pad_idx, split="test"),
+        num_workers=WORKERS,
         pin_memory=PIN_MEMORY
     )
 
-    return train_loader, val_loader, test_loader, shared_vocab
+    return train_dataset, train_loader, val_loader, test_loader, shared_vocab

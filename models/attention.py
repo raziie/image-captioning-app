@@ -38,3 +38,10 @@ class Attention(nn.Module):
         context = (encoder_out * alpha.unsqueeze(2)).sum(dim=1)  # [B, encoder_dim]
 
         return context, alpha
+
+
+if __name__ == '__main__':
+    model = Attention(encoder_dim=1280, decoder_dim=256, attention_dim=256)
+    attention_weighted_encoding, alpha = model(torch.randn(1, 64, 1280), torch.randn(1, 256))
+    print(attention_weighted_encoding.shape)  # (batch_size, encoder_dim)
+    print(alpha.shape)  # (batch_size, num_pixels)

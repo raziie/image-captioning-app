@@ -96,7 +96,7 @@ python -m spacy download en_core_web_sm
 
 ### 💻 Train the model
 ```bash
-python train.py
+python run_train.py
 ```
 
 ### 🖼️ Run inference (Flask or CLI)

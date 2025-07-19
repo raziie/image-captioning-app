@@ -1,15 +1,12 @@
-import torch
 import torchvision.transforms as transforms
 import pickle
 from PIL import Image
-from config.app_config import *
 from .utils import *
 from captioning.visualize import visualize_attention
 from captioning.generator import CaptionGenerator
 from models.encoder import Encoder
 from models.decoder import Decoder
 from config.base_config import *
-from data.vocab import Vocabulary
 
 
 def get_encoder_dim(enc, image_shape, device='cpu'):
