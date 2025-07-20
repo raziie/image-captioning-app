@@ -3,6 +3,7 @@ from torch.nn.utils.rnn import pack_padded_sequence
 from engine.validate import validate
 from config.train_config import *
 from config.base_config import *
+from config.app_config import *
 
 
 def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_optimizer, epoch, device):
@@ -125,7 +126,7 @@ def train_model(train_loader, val_loader, encoder, decoder, encoder_optimizer,
             vocab=shared_vocab
         )
 
-        if fine_tune_encoder:
+        if FINE_TUNE_ENCODER:
             update_scheduler(encoder_scheduler, val_loss, "Encoder")
 
         update_scheduler(decoder_scheduler, val_loss, "Decoder")
@@ -150,8 +151,8 @@ def train_model(train_loader, val_loader, encoder, decoder, encoder_optimizer,
             'best_bleu4': best_bleu4,
         }
 
-        torch.save(checkpoint, 'checkpoint.pth')
+        torch.save(checkpoint, SIMPLE_CHECKPOINT_PATH)
         if is_best:
-            torch.save(checkpoint, 'checkpoint_best.pth')
+            torch.save(checkpoint, BEST_CHECKPOINT_PATH)
 
 

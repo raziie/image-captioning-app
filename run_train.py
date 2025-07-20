@@ -46,7 +46,7 @@ def main():
         device=DEVICE
     )
 
-    evaluate(encoder, decoder, test_loader, vocab, beam_size=BEAM_SIZE)
+    evaluate(encoder, decoder, test_loader, vocab, beam_size=BEAM_SIZE, device=DEVICE)
 
 
 if __name__ == '__main__':

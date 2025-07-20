@@ -43,6 +43,7 @@ def analyze_caption_lengths(dataset):
 
 
 def analyze_word_freq(dataset):
+    nltk.download('punkt')
     all_captions = [caption for caption in dataset.captions]
     all_words = nltk.tokenize.word_tokenize(" ".join(all_captions).lower())
     word_freq = Counter(all_words)

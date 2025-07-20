@@ -31,7 +31,7 @@ class Encoder(nn.Module):
         Freeze all layers except the final residual block (layer4) if fine_tune=True.
         """
         for name, param in self.model.named_parameters():
-            param.requires_grad = self.fine_tune and "layer4" in name
+            param.requires_grad = self.fine_tune and "7" in name
 
 
 if __name__ == '__main__':

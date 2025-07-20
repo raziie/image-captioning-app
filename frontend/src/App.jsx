@@ -15,12 +15,13 @@ function App() {
   const [duration, setDuration] = useState(0);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5000/ping")
       .then(res => res.json())
-      .then(data => console.log("✅ Connected to backend:", data))
-      .catch(err => console.error("❌ Backend not responding:", err));
+      .then(data => console.log("Connected to backend:", data))
+      .catch(err => console.error("Backend not responding:", err));
   }, []);
 
   useEffect(() => {
@@ -130,28 +131,49 @@ function App() {
             <form onSubmit={handleUpload} className="space-y-4">
               <div className="space-y-2">
                 <div className="flex flex-col items-center justify-center w-full gap-4">
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50 transition-colors duration-300">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <span className="material-symbols-outlined text-gray-500 text-3xl mb-2">
-                          upload_file
-                        </span>
-                        <p className="mb-2 text-sm text-gray-500">
-                          <span className="font-semibold">Click to upload </span>
-                          or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500">PNG, JPG or JPEG</p>
-                      </div>
-                      <input
-                        id="image-upload"
-                        type="file"
-                        className="hidden"
-                        accept="image/png, image/jpeg, image/jpg"
-                        onChange={(e) => {
-                          setImage(e.target.files[0]);
-                          setError("");
-                        }}
-                      />
-                    </label>
+                  <label
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsDragging(true);
+                    }}
+                    onDragLeave={() => setIsDragging(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsDragging(false);
+                      const file = e.dataTransfer.files[0];
+                      if (file && file.type.startsWith("image/")) {
+                        setImage(file);
+                        setError("");
+                      } else {
+                        setError("Please upload a valid image file (PNG, JPG, JPEG)");
+                      }
+                    }}
+                    className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors duration-300 ${isDragging ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-white hover:bg-gray-50"
+                      }`}>
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <span className="material-symbols-outlined text-gray-500 text-3xl mb-2">
+                        upload_file
+                      </span>
+                      <p className="mb-2 text-sm text-gray-500">
+                        <span className="font-semibold">Click to upload </span>
+                        or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-500">PNG, JPG or JPEG</p>
+                    </div>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      className="hidden"
+                      accept="image/png, image/jpeg, image/jpg"
+                      onChange={(e) => {
+                        setImage(e.target.files[0]);
+                        setError("");
+                      }}
+                    />
+                  </label>
+                  {error && (
+                    <p className="text-red-600 text-sm mt-2 text-center">{error}</p>
+                  )}
                   <div className="flex flex-col gap-4">
                     {image && <img
                       className="object-cover w-full h-full"
@@ -164,10 +186,10 @@ function App() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full px-4 py-3 rounded-lg transition-all duration-300 ease-in-out flex items-center justify-center shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 bg-primary-600
+                className={`w-full px-4 py-3 rounded-lg transition-all duration-300 ease-in-out flex items-center justify-center shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 bg-sky-600
                                 ${loading
                     ? "text-white cursor-not-allowed"
-                    : "text-white hover:-translate-y-1 hover:bg-primary-700 focus:ring-primary-500"}
+                    : "text-white hover:-translate-y-1 hover:bg-sky-700 focus:ring-sky-500"}
                               `}
               >
                 <span className="material-symbols-outlined mr-2">
@@ -184,27 +206,32 @@ function App() {
             {/* Caption */}
             <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
               <h3 className="text-lg font-medium mb-2">Generated Caption</h3>
-              {isGenerated && <p className="text-gray-700 mb-4">{response.caption}</p>}
               {/* Additional Actions */}
-              {isGenerated && <div className="flex flex-wrap gap-3 justify-end">
-                {copied && (
-                  <span className="text-sm py-5 animate-fade-in z-50">
-                    Copied to clipboard!
-                  </span>
-                )}
-                <button onClick={handleCopy}>
-                  <span className="material-symbols-outlined mr-2 text-gray-600">content_copy</span>
-                </button>
+              {isGenerated && <div className="flex flex-wrap gap-3 justify-between">
+                  <p className="text-gray-700 mb-4">{response.caption}</p>
+                  <button className="flex gap-3 items-center" onClick={handleCopy}>
+                      {copied && (
+                          <span className="text-xs text-gray-500 animate-fade-in z-50">
+                            Copied to clipboard!
+                          </span>
+                        )}
+                      <span className="material-symbols-outlined mr-2 text-gray-600">content_copy</span>
+                  </button>
               </div>}
               {/* Audio Player */}
               {isGenerated && (
                 <div className="bg-gray-50 p-4 rounded-md shadow-sm space-y-4">
-                  <audio ref={audioRef} src={`http://localhost:5000/${response.audio}`} preload="metadata" className="hidden" />
-
+                  <audio
+                    ref={audioRef}
+                    src={`http://localhost:5000/${response.audio}`}
+                    preload="metadata"
+                    className="hidden"
+                    onEnded={() => setIsPlaying(false)}
+                  />
                   <div className="flex items-center justify-between gap-3">
                     <button
                       onClick={togglePlay}
-                      className="flex p-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition"
+                      className="flex p-2 rounded-full bg-sky-600 text-white hover:bg-sky-700 transition"
                     >
                       <span className="material-symbols-outlined">{isPlaying ? "pause" : "play_arrow"}</span>
                     </button>
@@ -222,7 +249,7 @@ function App() {
                       {formatTime(currentTime)}
                     </span>
                     <span className="text-sm text-gray-500 whitespace-nowrap">
-                       /
+                      /
                     </span>
                     <span className="text-sm text-gray-500 whitespace-nowrap">
                       {formatTime(duration)}
@@ -254,7 +281,7 @@ function App() {
           <div className="text-center text-gray-500 text-sm pt-4 border-t border-gray-200">
             <p>
               Powered by Image Captioning App •{" "}
-              <a href="https://github.com/raziie/image-captioning-app" className="text-primary-600 hover:underline">
+              <a href="https://github.com/raziie/image-captioning-app" className="text-sky-600 hover:underline">
                 Learn more
               </a>
             </p>

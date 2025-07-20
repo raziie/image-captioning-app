@@ -21,6 +21,7 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+.idea/
 
 # VSCode settings
 .vscode/
@@ -32,11 +33,6 @@ build/
 .env
 .env.*
 
-# Node.js frontend stuff (React)
-node_modules/
-*.log
-npm-debug.log*
-
 # Frontend build output
 frontend/build/
 frontend/node_modules/
@@ -44,3 +40,5 @@ frontend/node_modules/
 checkpoints/
 app/static/
 data/input/
+
+kaggle.json

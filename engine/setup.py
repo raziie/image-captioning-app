@@ -14,14 +14,14 @@ def get_scheduler(optimizer):
 
 def get_optimizers(encoder, decoder, decoder_lr, encoder_lr, fine_tune_encoder):
     decoder_optimizer = torch.optim.Adam(
-        filter(lambda p: p.requires_grad, decoder.parameters()),
+        params=filter(lambda p: p.requires_grad, decoder.parameters()),
         lr=decoder_lr
     )
 
     encoder_optimizer = None
     if fine_tune_encoder:
         encoder_optimizer = torch.optim.Adam(
-            filter(lambda p: p.requires_grad, encoder.parameters()),
+            params=filter(lambda p: p.requires_grad, encoder.parameters()),
             lr=encoder_lr
         )
 

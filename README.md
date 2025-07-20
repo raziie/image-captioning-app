@@ -19,13 +19,11 @@ Automatically generate human-like captions for images using deep learning. This 
 
 ```
 image-captioning/
-├── static/
-│   └── uploads/             # Stores uploaded images & audio files
 │
 ├── app/
 │   ├── static/
 │        └── uploads/        # Stores uploaded images & audio files
-│   ├── model.py             # Inference logic and model loading
+│   ├── inference.py         # Inference logic and model loading
 │   ├── routes.py            # Web routes for Flask app
 │   ├── utils.py             # Helper functions like save_uploaded_image(), save_caption_audio()
 │
@@ -39,23 +37,37 @@ image-captioning/
 │
 ├── config/
 │   ├── app_config.py       # App-specific parameters
-│   ├── base_config.py      # Base config shared across modes
+│   ├── base_config.py      # Base config shared across models
 │   ├── data_config.py      # Data-specific parameters
+│   ├── train_config.py     # Train-specific parameters
 │
 ├── data/
+│   ├── input/               # Input dataset files
 │   ├── collate.py           # Collate class
+│   ├── data_analysis.py     # Functions for data analysis
 │   ├── dataloader.py        # DataLoader setup
 │   ├── vocab.py             # Vocabulary class
 │   ├── dataset.py           # Custom Image Captioning Dataset 
 │
 ├── engine/
+│   ├── setup.py              # Functions to get optimizers, schedulers, and criterion
 │   ├── train.py              # Training loop
 │   ├── validate.py           # Validation logic
 │   ├── evaluate.py           # Evaluation/metrics
 │
 ├── frontend/
-│   ├── 
-│
+│   ├── node_modules/         # Dependencies installed by npm (auto-generated)
+│   ├── src/                  # Source code for the React frontend
+│   │ ├── App.css             # Styles specific to the App component 
+│   │ ├── App.jsx             # Main App component
+│   │ ├── main.jsx            # Entry point that renders <App /> into the DOM
+│   │   
+│   ├── eslint.config.js      # ESLint configuration for code linting and formatting
+│   ├── index.html            # HTML template used by Vite to inject the app
+│   ├── package.json          # Project metadata and dependencies
+│   ├── package-lock.json     # Exact dependency versions locked for consistent installs
+│   ├── vite.config.js        # Vite configuration for the build tool and dev server
+│   
 ├── notebooks/
 │   ├── image-caption-generation.ipynb
 │
@@ -63,9 +75,10 @@ image-captioning/
 │   ├── attention.py         # Attention class
 │   ├── encoder.py           # Encoder CNN (e.g., ResNet)
 │   ├── decoder.py           # Decoder LSTM with attention
-│
-├── run.py                   # Main runner (Flask app or CLI)       
-├── requirements.txt
+│  
+├── run.py                   # Main runner (Flask app)      
+├── train_run.py             # Main training script for captioning model (load, train, validate, evaluate) 
+├── requirements.txt         # Python dependencies required to run the backend
 └── README.md                # You’re reading it 😄
 ```
 
@@ -99,9 +112,15 @@ python -m spacy download en_core_web_sm
 python run_train.py
 ```
 
-### 🖼️ Run inference (Flask or CLI)
+### 🖼️ Run inference (Flask)
 ```bash
 python run.py
+```
+
+### 🚀 Run UI (REACT)
+```bash
+cd ./frontend
+npm run dev
 ```
 
 Then upload an image to get its caption and audio version.
@@ -135,8 +154,6 @@ Edit configs in the `configs/` directory to tweak model settings, learning rates
 
 - Replace GRU with Transformer decoder
 - Support for multilingual captions
-- Deploy as a full web app with audio player
-- Add caption beam search UI
 
 ---
 

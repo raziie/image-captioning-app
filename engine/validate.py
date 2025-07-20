@@ -27,7 +27,7 @@ def validate(val_loader, encoder, decoder, criterion, epoch, device, vocab):
 
             targets = captions_sorted[:, 1:]
 
-            # scores_copy = scores.clone()
+            scores_copy = scores.clone()
             scores = pack_padded_sequence(scores, decode_lengths, batch_first=True)[0]
             targets = pack_padded_sequence(targets, decode_lengths, batch_first=True)[0]
 
@@ -35,7 +35,7 @@ def validate(val_loader, encoder, decoder, criterion, epoch, device, vocab):
             loss += ALPHA_C * ((1. - alphas.sum(dim=1)) ** 2).mean()
             total_loss += loss.item()
 
-            bleu4 = compute_bleu4(scores, decode_lengths, sort_ind, allcaps, vocab)
+            bleu4 = compute_bleu4(scores_copy, decode_lengths, sort_ind, allcaps, vocab)
 
             if i % PRINT_FREQ == 0:
                 print(f'Validation -> Epoch: [{epoch}][{i}/{len(val_loader)}]\t ,loss: {loss}\t ,bleu4: {bleu4}')
@@ -44,8 +44,7 @@ def validate(val_loader, encoder, decoder, criterion, epoch, device, vocab):
     return avg_loss, bleu4
 
 
-def compute_bleu4(scores, decode_lengths, sort_ind, allcaps, vocab):
-    scores_copy = scores.clone()
+def compute_bleu4(scores_copy, decode_lengths, sort_ind, allcaps, vocab):
     _, preds = torch.max(scores_copy, dim=2)
 
     preds = preds.cpu().tolist()

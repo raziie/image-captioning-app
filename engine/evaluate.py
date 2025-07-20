@@ -18,7 +18,7 @@ def evaluate(encoder, decoder, data_loader, vocab, device, beam_size=5):
         image = image.to(device)
         allcaps = allcaps.to(device)
 
-        seq, alphas = caption_generator.generate_beam_search(encoder, decoder, image.squeeze(0), vocab, beam_size)
+        seq, alphas = caption_generator.generate_beam_search(image.squeeze(0), beam_size=beam_size)
 
         pred = [vocab.itos[ind] for ind in seq if ind not in {vocab.stoi['<start>'], vocab.stoi['<pad>'], vocab.stoi['<end>']}]
         hypotheses.append(pred)
