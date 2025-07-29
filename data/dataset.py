@@ -2,7 +2,6 @@ import os
 import random
 from torch.utils.data import Dataset
 from PIL import Image
-import torch
 from data.vocab import Vocabulary
 
 

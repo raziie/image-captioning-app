@@ -1,4 +1,3 @@
-import torch
 from torch.nn.utils.rnn import pack_padded_sequence
 from engine.validate import validate
 from config.train_config import *
@@ -19,10 +18,6 @@ def train(train_loader, encoder, decoder, criterion, encoder_optimizer, decoder_
         decoder_optimizer: Optimizer for decoder
         epoch: Current epoch number (int)
         device: Device to run on (e.g. "cuda" or "cpu")
-        alpha_c: Attention regularization coefficient
-        grad_clip: Max norm for gradient clipping (None to disable)
-        print_freq: Print status every N batches
-        fine_tune_encoder: Whether encoder is being fine-tuned
     """
     decoder.train()
     encoder.train()
@@ -71,6 +66,7 @@ def update_scheduler(scheduler, val_loss, name=""):
     old_lr = scheduler.optimizer.param_groups[0]['lr']
     scheduler.step(val_loss)
     new_lr = scheduler.optimizer.param_groups[0]['lr']
+    print(f"Current LR: {new_lr}")
     if new_lr != old_lr:
         print(f"{name} learning rate decreased: {old_lr:.6f} => {new_lr:.6f}")
 
@@ -154,5 +150,3 @@ def train_model(train_loader, val_loader, encoder, decoder, encoder_optimizer,
         torch.save(checkpoint, SIMPLE_CHECKPOINT_PATH)
         if is_best:
             torch.save(checkpoint, BEST_CHECKPOINT_PATH)
-
-

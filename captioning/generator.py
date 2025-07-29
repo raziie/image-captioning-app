@@ -1,6 +1,5 @@
 import torch
 import torch.nn.functional as F
-import numpy as np
 
 
 class CaptionGenerator:
@@ -121,91 +120,3 @@ class CaptionGenerator:
 
         best_seq_idx = complete_scores.argmax().item()
         return complete_seqs[best_seq_idx], complete_alphas[best_seq_idx]
-
-    # def generate_beam_search(self, image, beam_size=5, max_len=50):
-    #     encoder_out, enc_image_size, encoder_dim = self._encode_image(image)
-    #     encoder_out = encoder_out.expand(beam_size, -1, -1)
-    #
-    #     sequences = self._init_beam_sequences(beam_size, enc_image_size)
-    #     h, c = self.decoder.init_states(encoder_out)
-    #
-    #     step = 1
-    #     while True:
-    #         sequences = self._beam_step(sequences, encoder_out, h, c, enc_image_size)
-    #         h, c, encoder_out = sequences['h'], sequences['c'], sequences['encoder_out']
-    #         if sequences['done'] or step > max_len:
-    #             break
-    #         step += 1
-    #
-    #     return self._finalize_beam(sequences)
-    #
-    # def _init_beam_sequences(self, k, enc_image_size):
-    #     start_token = self.vocab.stoi['<start>']
-    #     k_prev_words = torch.LongTensor([[start_token]] * k).to(self.device)
-    #     top_k_scores = torch.zeros(k, 1).to(self.device)
-    #     seqs = k_prev_words.clone()
-    #     seqs_alpha = torch.ones(k, 1, enc_image_size, enc_image_size).to(self.device)
-    #     return {
-    #         'k': k, 'seqs': seqs, 'alphas': seqs_alpha,
-    #         'top_k_scores': top_k_scores,
-    #         'prev_words': k_prev_words,
-    #         'complete_seqs': [], 'complete_alphas': [], 'complete_scores': [],
-    #         'h': None, 'c': None, 'encoder_out': None, 'done': False
-    #     }
-    #
-    # def _beam_step(self, s, encoder_out, h, c, enc_image_size):
-    #     embeddings = self.decoder.embedding(s['prev_words']).squeeze(1)
-    #     attn_encoding, alpha = self._apply_attention(encoder_out, h)
-    #     alpha = alpha.view(-1, enc_image_size, enc_image_size)
-    #
-    #     h, c = self.decoder.lstm_cell(torch.cat([embeddings, attn_encoding], dim=1), (h, c))
-    #     scores = F.log_softmax(self.decoder.fc(h), dim=1)
-    #     scores = s['top_k_scores'].expand_as(scores) + scores
-    #
-    #     top_scores, top_words = scores.view(-1).topk(s['k'], 0, True, True)
-    #     vocab_size = scores.size(1)
-    #     prev_inds = top_words // vocab_size
-    #     next_inds = top_words % vocab_size
-    #
-    #     seqs = torch.cat([s['seqs'][prev_inds], next_inds.unsqueeze(1)], dim=1)
-    #     alphas = torch.cat([s['alphas'][prev_inds], alpha[prev_inds].unsqueeze(1)], dim=1)
-    #
-    #     complete_mask = (next_inds == self.vocab.stoi['<end>'])
-    #     incomplete_mask = ~complete_mask
-    #
-    #     if complete_mask.any():
-    #         s['complete_seqs'].extend(seqs[complete_mask].tolist())
-    #         s['complete_alphas'].extend(alphas[complete_mask].tolist())
-    #         s['complete_scores'].extend(top_scores[complete_mask])
-    #
-    #     s['k'] -= complete_mask.sum().item()
-    #     if s['k'] == 0:
-    #         s['done'] = True
-    #         return s
-    #
-    #     # Prepare next step
-    #     seqs = seqs[incomplete_mask]
-    #     alphas = alphas[incomplete_mask]
-    #     h = h[prev_inds[incomplete_mask]]
-    #     c = c[prev_inds[incomplete_mask]]
-    #     encoder_out = encoder_out[prev_inds[incomplete_mask]]
-    #     top_k_scores = top_scores[incomplete_mask].unsqueeze(1)
-    #     k_prev_words = next_inds[incomplete_mask].unsqueeze(1)
-    #
-    #     s.update({
-    #         'seqs': seqs, 'alphas': alphas,
-    #         'top_k_scores': top_k_scores,
-    #         'prev_words': k_prev_words,
-    #         'h': h, 'c': c, 'encoder_out': encoder_out
-    #     })
-    #     return s
-    #
-    # def _finalize_beam(self, s):
-    #     if not s['complete_scores']:
-    #         s['complete_seqs'] = s['seqs'].tolist()
-    #         s['complete_alphas'] = s['alphas'].tolist()
-    #         s['complete_scores'] = s['top_k_scores'].squeeze(1)
-    #
-    #     best_idx = torch.tensor(s['complete_scores']).argmax().item()
-    #     return s['complete_seqs'][best_idx], s['complete_alphas'][best_idx]
-

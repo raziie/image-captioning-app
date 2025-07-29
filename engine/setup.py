@@ -7,8 +7,7 @@ def get_scheduler(optimizer):
         optimizer,
         mode='min',
         factor=0.8,
-        patience=2,
-        verbose=True
+        patience=2
     )
 
 

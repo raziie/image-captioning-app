@@ -8,17 +8,17 @@ def show_batch(train_loader, shared_vocab):
     print(f"Batch Size: {len(images)}")
     print(f"Image Tensor Shape: {images.shape}")
 
+    text_caption = shared_vocab.textualize(captions[0])
+    print(f"First Caption Tensor: {captions[0]}")
+    print(f"Converted: {text_caption}")
+    print(f"Length: {caplens[0]}")
+
     image = images[0].permute(1, 2, 0).numpy()
     image = image * 0.225 + 0.45
     plt.imshow(image)
     plt.title("First Image")
     plt.axis('off')
     plt.show()
-
-    text_caption = shared_vocab.textualize(captions[0])
-    print(f"First Caption Tensor: {captions[0]}")
-    print(f"Converted: {text_caption}")
-    print(f"Length: {caplens[0]}")
 
 
 def show_sample(dataset, idx):
@@ -27,8 +27,12 @@ def show_sample(dataset, idx):
     image = image * 0.225 + 0.45
     text_caption = dataset.vocab.textualize(caption)
     all_caps = "\n".join(dataset.captions_dict[dataset.image_names[idx]])
+    print(f"All captions:\n{all_caps}")
+    print(f"Sampled: {text_caption}")
+    print(f"(len={caption_length})")
+
     plt.imshow(image)
-    plt.title(f'All captions:\n{all_caps}\n\nSampled: {text_caption} (len={caption_length})', fontsize=10)
+    plt.title("Sample Image", fontsize=10)
     plt.axis('off')
     plt.show()
 

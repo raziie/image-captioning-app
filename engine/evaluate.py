@@ -20,11 +20,13 @@ def evaluate(encoder, decoder, data_loader, vocab, device, beam_size=5):
 
         seq, alphas = caption_generator.generate_beam_search(image.squeeze(0), beam_size=beam_size)
 
-        pred = [vocab.itos[ind] for ind in seq if ind not in {vocab.stoi['<start>'], vocab.stoi['<pad>'], vocab.stoi['<end>']}]
+        pred = [vocab.itos[ind] for ind in seq if ind not in
+                {vocab.stoi['<start>'], vocab.stoi['<pad>'], vocab.stoi['<end>']}]
         hypotheses.append(pred)
 
         img_refs = [
-            [vocab.itos[ind] for ind in cap if ind not in {vocab.stoi['<start>'], vocab.stoi['<pad>'], vocab.stoi['<end>']}]
+            [vocab.itos[ind] for ind in cap if ind not in
+             {vocab.stoi['<start>'], vocab.stoi['<pad>'], vocab.stoi['<end>']}]
             for cap in allcaps[0].tolist()
         ]
         references.append(img_refs)
@@ -47,5 +49,6 @@ def evaluate(encoder, decoder, data_loader, vocab, device, beam_size=5):
     print(f"METEOR: {meteor_score:.4f}")
 
     spice_result = Spice().compute_score(coco_references, coco_predictions)
-    spice_score = spice_result[0] if isinstance(spice_result[0], float) else spice_result[0].get("All", {}).get("f", 0.0)
+    spice_score = spice_result[0] if isinstance(spice_result[0], float) \
+        else spice_result[0].get("All", {}).get("f", 0.0)
     print(f"SPICE: {spice_score:.4f}")

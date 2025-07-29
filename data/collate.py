@@ -17,7 +17,6 @@ class MyCollate:
         images = torch.cat(images, dim=0)
         # Pad captions into [B, max_len]
         padded_captions = pad_sequence(captions, batch_first=True, padding_value=self.pad_idx)
-        lengths = torch.tensor(lengths, dtype=torch.long)
 
         output = (images, padded_captions, torch.tensor(lengths))
 
@@ -25,7 +24,7 @@ class MyCollate:
             # Expect item[3] to be a list of multiple captions per image
             all_captions = [item[3] for item in batch]  # Shape: [B, num_caps, variable_len]
 
-            flat = [torch.tensor(cap) for caps in all_captions for cap in caps]
+            flat = [cap.clone().detatch() for caps in all_captions for cap in caps]
             padded = pad_sequence(flat, batch_first=True, padding_value=self.pad_idx)
 
             B = len(batch)

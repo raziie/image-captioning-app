@@ -7,14 +7,11 @@ class Encoder(nn.Module):
         super().__init__()
         self.fine_tune = fine_tune
 
-        # Load ResNet-101 with pretrained weights
         weights = ResNet101_Weights.DEFAULT
         resnet = resnet101(weights=weights)
 
-        # Remove the final average pool and fully connected layers
         self.model = nn.Sequential(*list(resnet.children())[:-2])  # Output shape: [B, 2048, H/32, W/32]
 
-        # Apply fine-tuning rules
         self._set_grad()
 
     def forward(self, images):
