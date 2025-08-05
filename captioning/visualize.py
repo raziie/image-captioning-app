@@ -29,7 +29,7 @@ def visualize_attention(image_path, seq, alphas, vocab, output_path=None, smooth
         alpha = skimage.transform.pyramid_expand(alpha, upscale=24, sigma=8) if smooth \
             else skimage.transform.resize(alpha, [14 * 24, 14 * 24])
 
-        ax.imshow(alpha, alpha=0.8 if t != 0 else 0)
+        ax.imshow(alpha, cmap='Greys_r', alpha=0.8 if t != 0 else 0)
         ax.axis('off')
 
     for ax in axes[num_words:]:

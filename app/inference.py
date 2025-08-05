@@ -46,7 +46,7 @@ def load_captioner_and_vocab():
     return captioner, vocab
 
 
-def generate_caption(image_path, visualize=False):
+def generate_caption(image_path, visualize=False, base_filename=None):
     captioner, vocab = load_captioner_and_vocab()
     transform = get_transform()
 
@@ -55,10 +55,12 @@ def generate_caption(image_path, visualize=False):
     img = transform(img).to(DEVICE)  # (3, 256, 256)
 
     seq, alphas = captioner.generate_beam_search(img, beam_size=BEAM_SIZE)
-
-    # Visualize caption and attention of best sequence
-    if visualize:
-        visualize_attention(image_path, seq, torch.FloatTensor(alphas), vocab, smooth=True)
-
     caption = ' '.join([vocab.itos[idx] for idx in seq if vocab.itos[idx] not in ['<start>', '<end>']])
+
+    # Generate attention map of best sequence
+    if visualize:
+        relative_path = os.path.join('static', 'plots', f"{base_filename}.png")
+        plot_output_path = os.path.join(BASE_APP_DIR, relative_path)
+        visualize_attention(full_image_path, seq, torch.FloatTensor(alphas), vocab, output_path=plot_output_path, smooth=True)
+        return caption, relative_path
     return caption

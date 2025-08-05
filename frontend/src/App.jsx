@@ -275,6 +275,13 @@ function App() {
                 </div>
               )}
             </div>
+            <div className="flex justify-center mt-6">
+              <img
+                src={`http://localhost:5000/${response.attention_map_plot}`}
+                alt="Attention Map"
+                className="max-w-full max-h-[400px] rounded-lg shadow-lg border border-gray-300"
+              />
+            </div>
           </div>}
 
           {/* Footer */}

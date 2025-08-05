@@ -1,5 +1,4 @@
-from flask import Blueprint, jsonify, request, send_from_directory
-from .utils import *
+from flask import Blueprint, jsonify, request, send_file
 from .inference import *
 
 # Create a blueprint object
@@ -15,11 +14,12 @@ def index():
 def predict_caption():
     file = request.files['image']
     path, base_filename = save_uploaded_image(file)
-    caption = generate_caption(path, visualize=False)
+    caption, attention_map_plot = generate_caption(path, visualize=True, base_filename=base_filename)
     audio_path = save_caption_audio(caption, base_filename)
     return jsonify({
         'caption': caption,
-        'audio': audio_path.replace("\\", "/")
+        'audio': audio_path.replace("\\", "/"),
+        'attention_map_plot': attention_map_plot.replace("\\", "/")
     })
 
 

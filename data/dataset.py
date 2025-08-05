@@ -6,17 +6,7 @@ from data.vocab import Vocabulary
 
 
 class ImageCaptionDataset(Dataset):
-    def __init__(
-        self,
-        image_folder,
-        captions_dict,
-        tokens,
-        split,
-        captions_per_image=5,
-        transform=None,
-        freq_threshold=5,
-        vocab=None,
-    ):
+    def __init__(self, image_folder, captions_dict, tokens, split, captions_per_image=5, transform=None, freq_threshold=5, vocab=None):
         self.image_folder = image_folder
         self.split = split
         self.captions_per_image = captions_per_image
